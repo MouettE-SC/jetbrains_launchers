@@ -13,6 +13,18 @@
 #elif defined(PYCHARM)
 #define DIRECTORY "PyCharm-P"
 #define BINARY "pycharm64.exe"
+#elif defined(CLION)
+#define DIRECTORY "CLion"
+#define BINARY "clion64.exe"
+#elif defined(PHPSTORM)
+#define DIRECTORY "PhpStorm"
+#define BINARY "phpstorm64.exe"
+#elif defined(GOLAND)
+#define DIRECTORY "Goland"
+#define BINARY "goland64.exe"
+#elif defined(WEBSTORM)
+#define DIRECTORY "WebStorm"
+#define BINARY "webstorm64.exe"
 #endif
 
 int  WinMain() {
