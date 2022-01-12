@@ -28,26 +28,39 @@
 #endif
 
 int  WinMain() {
-    DIR *d;
-    struct dirent *dir;
-    char best[56], current[56], *pos, path[256];
-    int err;
+    DIR *p,*d;
+    struct dirent *channel_dir,*dir;
+    char best[56], current[56], *pos, channel[56], ppath[256], path[256];
 
-    d = opendir("C:\\tools\\Jetbrains\\apps\\" DIRECTORY "\\ch-0");
+    p = opendir("C:\\tools\\Jetbrains\\apps\\" DIRECTORY);
+    memset(ppath, '\0', 256);
+    memset(channel, '\0', 56);
     memset(best, '\0', 56);
     best[0] = '0';
     memset(current, '\0', 56);
-    while ((dir = readdir(d)) != NULL) {
-        strcpy(current, dir->d_name);
-        pos = strrchr(current, '.');
-        if ( strcmp(pos, ".vmoptions") == 0 ) {
-            current[pos - current] = '\0';
-            if (strcmp(current, best) > 0)
-                strcpy(best, current);
+    while ((channel_dir = readdir(p)) != NULL ) {
+        if (strncmp(channel_dir->d_name, "ch-", 3) != 0)
+            continue;
+        strcpy(ppath, "C:\\tools\\Jetbrains\\apps\\" DIRECTORY "\\");
+        strcat(ppath, channel_dir->d_name);
+        d = opendir(ppath);
+        while ((dir = readdir(d)) != NULL) {
+            strcpy(current, dir->d_name);
+            pos = strrchr(current, '.');
+            if (pos != NULL && strcmp(pos, ".vmoptions") == 0) {
+                current[pos - current] = '\0';
+                if (strcmp(current, best) > 0) {
+                    strcpy(best, current);
+                    strcpy(channel, channel_dir->d_name);
+                }
+            }
         }
+        closedir(d);
     }
-    closedir(d);
-    strcpy(path, "C:\\tools\\Jetbrains\\apps\\" DIRECTORY "\\ch-0\\");
+    closedir(p);
+    strcpy(path, "C:\\tools\\Jetbrains\\apps\\" DIRECTORY "\\");
+    strcat(path, channel);
+    strcat(path, "\\");
     strcat(path, best);
     strcat(path, "\\bin\\" BINARY);
     execl(path, path, NULL);
